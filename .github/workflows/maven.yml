@@ -27,11 +27,16 @@ jobs:
           cache: maven
       - name: Build with Maven
         run: cd test-ci-cd && mvn verify
-      - name: Upload artifacts
+      - name: Upload jar
         uses: actions/upload-artifact@main
         with:
           name: jar
           path: test-ci-cd/target/*.jar
+      - name: Upload dockerfile
+        uses: actions/upload-artifact@main
+        with:
+          name: Dockerfile
+          path: test-ci-cd/Dockerfile
 
   createDocker:
     needs: build
@@ -41,11 +46,16 @@ jobs:
       docker:latest:
         image: docker:latest
     steps:
-      - name: Download artifacts
+      - name: Download jar
         uses: actions/download-artifact@main
         with:
           name: jar
           path: test-ci-cd/target/*.jar
+      - name: Download dockerfile
+        uses: actions/download-artifact@main
+        with:
+          name: Dockerfile
+          path: test-ci-cd/Dockerfile
       - name: Build docker
         run: cd test-ci-cd && docker build -t ghcr.io/afkramer/ci-cd-docker .
       - name: Login to docker
