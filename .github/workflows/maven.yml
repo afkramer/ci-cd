@@ -34,6 +34,8 @@ jobs:
           path: test-ci-cd/target/*.jar
 
   createDocker:
+    runs-on: ubuntu-latest
+
     services:
       docker:latest:
         image: docker:latest
