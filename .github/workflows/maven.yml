@@ -62,3 +62,15 @@ jobs:
         run: docker login ghcr.io --username ${{ secrets.DOCKER_TOKEN }} --password ${{ secrets.DOCKER_TOKEN }}
       - name: Push to Docker
         run: docker push ghcr.io/afkramer/ci-cd-docker
+
+  restartApp:
+    needs: createDocker
+    runs-on: ubuntu-latest
+    services:
+      azurecli:
+        image: mcr.microsoft.com/azure-cli
+    steps:
+      - name: Login to Azure
+        run: az login --service-principal -u ${{ secrets.AZ_USERNAME }} -p ${{ secrets.AZ_PASSWORD }} --tenant ${{ secrets.AZ_TENANT}}
+      - name: Restart app
+        run: az webapp restart --name ci-cd-test-afk --resource-group f73-gen4-kramer
