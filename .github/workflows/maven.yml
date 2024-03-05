@@ -10,21 +10,42 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
-    - name: Build with Maven
-      run: cd test-ci-cd && mvn verify
-      
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+      - name: Build with Maven
+        run: cd test-ci-cd && mvn verify
+      - name: Upload artifacts
+        uses: actions/upload-artifact@main
+        with:
+          name: jar
+          path: test-ci-cd/target/*.jar
+
+  createDocker:
+    services:
+      docker:latest:
+        image: docker:latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@main
+        with:
+          name: jar
+          path: test-ci-cd/target/*.jar
+      - name: Build docker
+        run: cd test-ci-cd && docker build -t ghcr.io/afkramer/ci-cd-docker .
+      - name: Login to docker
+        run: docker login ghcr.io --username ${{ DOCKER_TOKEN }} --password ${{ DOCKER_TOKEN }}
+      - name: Push to Docker
+        run: docker push ghcr.io/afkramer/ci-cd-docker
