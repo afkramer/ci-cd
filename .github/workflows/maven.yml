@@ -55,7 +55,7 @@ jobs:
         uses: actions/download-artifact@main
         with:
           name: Dockerfile
-          path: test-ci-cd/dockerfile
+          path: test-ci-cd/docker
       - name: Build docker
         run: cd test-ci-cd && docker build -t ghcr.io/afkramer/ci-cd-docker .
       - name: Login to docker
