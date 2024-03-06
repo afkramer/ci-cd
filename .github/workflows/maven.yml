@@ -48,6 +48,7 @@ jobs:
         with:
           name: necessary-files
           path: .
+          merge-multiple: true
       - name: check what files are there
         run: ls -l
       - name: Build docker
