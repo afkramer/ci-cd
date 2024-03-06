@@ -48,6 +48,8 @@ jobs:
         with:
           name: necessary-files
           path: .
+      - name: check what files are there
+        run: ls -l
       - name: Build docker
         run: docker build -t ghcr.io/afkramer/ci-cd-docker .
       - name: Login to docker
