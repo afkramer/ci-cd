@@ -54,7 +54,7 @@ jobs:
         run: ls -l
       - name: Build docker
         run: |
-          cd test-ci-cd/docker-backend
+          cd docker-backend
           docker build -t ghcr.io/afkramer/ci-cd-docker .
       - name: Login to docker
         run: docker login ghcr.io --username ${{ secrets.DOCKER_TOKEN }} --password ${{ secrets.DOCKER_TOKEN }}
