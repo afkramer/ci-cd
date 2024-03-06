@@ -33,7 +33,8 @@ jobs:
           name: necessary-files
           path: |
             test-ci-cd/target/*.jar
-            test-ci-cd/docker-backend/Dockerfile
+            test-ci-cd/docker-backend/
+            test-ci-cd/docker-frontend/
 
   createBackendDocker:
     needs: build
@@ -45,14 +46,12 @@ jobs:
     steps:
       - name: Download necessary files
         uses: actions/download-artifact@main
-        with:
-          name: necessary-files
-          path: .
-          merge-multiple: true
       - name: check what files are there
         run: ls -l
       - name: Build docker
-        run: docker build -t ghcr.io/afkramer/ci-cd-docker .
+        run: |
+          cd test-ci-cd/docker-backend
+          docker build -t ghcr.io/afkramer/ci-cd-docker .
       - name: Login to docker
         run: docker login ghcr.io --username ${{ secrets.DOCKER_TOKEN }} --password ${{ secrets.DOCKER_TOKEN }}
       - name: Push to Docker
