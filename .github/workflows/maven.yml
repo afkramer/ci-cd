@@ -46,6 +46,10 @@ jobs:
     steps:
       - name: Download necessary files
         uses: actions/download-artifact@main
+        with:
+          name: necessary-files
+          path: .
+          merge-multiple: true
       - name: check what files are there
         run: ls -l
       - name: Build docker
